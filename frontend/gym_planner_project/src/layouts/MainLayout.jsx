@@ -4,7 +4,7 @@ function MainLayout() {
     const location = useLocation();
 
     return (
-        <div style={{ display: "flex", height: "100vh" }}>
+        <div className='container' style={{ display: "flex", height: "100vh", width: "100%" }}>
 
             {/* SIDEBAR */}
             <div style={{
@@ -24,7 +24,7 @@ function MainLayout() {
             </div>
 
             {/* CONTENT */}
-            <div style={{ flex: 1 }}>
+            <div style={{ width: "100%" }}>
 
                 {/* HEADER */}
                 <div style={{
@@ -38,7 +38,7 @@ function MainLayout() {
                 </div>
 
                 {/* PAGE */}
-                <div style={{ padding: "20px" }}>
+                <div style={{ padding: "20px", width: "100%" }}>
                     <Outlet />
                 </div>
 
