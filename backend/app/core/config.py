@@ -11,3 +11,8 @@ database = os.getenv("DB_NAME")
 
 DATABASE_URL = f"postgresql://{username}:{password}@{hostname}:{port}/{database}"
 
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+

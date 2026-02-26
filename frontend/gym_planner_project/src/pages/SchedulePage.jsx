@@ -1,9 +1,11 @@
-import React from 'react';
+import { useEffect, useState, React } from 'react';
 import { CheckCircle, ChevronDown, Clock } from 'lucide-react';
 import { TODAY_EXERCISES } from '../constants';
 import { motion } from 'framer-motion';
+import { useExercise } from '../hooks/useExercise';
 
-export const SchedulePage = ({ onSwitchPlan }) => {
+export const SchedulePage = ({ onSwitchPlan, onAddExercise }) => {
+    const { exercises, loading, error } = useExercise();
     const days = [
         { label: 'Mon', date: '12', active: true },
         { label: 'Tue', date: '13', active: false },
@@ -11,6 +13,24 @@ export const SchedulePage = ({ onSwitchPlan }) => {
         { label: 'Thu', date: '15', active: false },
         { label: 'Fri', date: '16', active: false },
     ];
+
+    console.log("Fetched exercises:", exercises, loading, error);
+
+    if (loading) {
+        return (
+            <div className="p-8 max-w-5xl mx-auto w-full space-y-8">
+                <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                        <h1 className="text-4xl font-black tracking-tight">Workout Schedule</h1>
+                        <p className="text-primary font-bold tracking-wide">Summer Hypertrophy Plan</p>
+                    </div>
+                </header>
+                <div className="flex items-center justify-center h-64">
+                    <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="p-8 max-w-5xl mx-auto w-full space-y-8">
@@ -23,7 +43,7 @@ export const SchedulePage = ({ onSwitchPlan }) => {
                     onClick={onSwitchPlan}
                     className="flex items-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary px-6 py-3 rounded-full transition-colors border border-primary/20 font-bold self-start"
                 >
-                    <span className="material-symbols-outlined text-[20px]">swap_horiz</span>
+                    <span className="material-symbols-outlined text-[20px]"></span>
                     <span>Switch Plan</span>
                 </button>
             </header>
@@ -107,7 +127,9 @@ export const SchedulePage = ({ onSwitchPlan }) => {
                     ))}
                 </div>
 
-                <button className="w-full py-8 rounded-2xl border-2 border-dashed border-slate-300 dark:border-primary/20 flex flex-col items-center justify-center gap-2 text-slate-400 dark:text-primary/40 hover:bg-primary/5 hover:border-primary/40 transition-all">
+                <button
+                    className="w-full py-8 rounded-2xl border-2 border-dashed border-slate-300 dark:border-primary/20 flex flex-col items-center justify-center gap-2 text-slate-400 dark:text-primary/40 hover:bg-primary/5 hover:border-primary/40 transition-all"
+                    onClick={onAddExercise}>
                     <PlusIcon size={32} />
                     <span className="font-black text-sm uppercase tracking-widest">Add Saturday Workout</span>
                 </button>

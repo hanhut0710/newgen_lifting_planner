@@ -1,17 +1,16 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 import uuid
 
 class UserCreate(BaseModel):
     username: str
-    email: str
+    email: EmailStr
     password_hash: str
-    gender: str
-    age: int
-    height_cm: float
-    weight_kg: float
-    body_fat: float
-    created_at: Optional[str] = None
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password_hash: str
+
 
 class UserUpdate(BaseModel):
     email: Optional[str] = None

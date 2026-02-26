@@ -4,26 +4,28 @@ from typing import List
 from app.core.database import get_db
 from app.schemas.nutrition_profile import NutritionProfileCreate, NutritionProfileUpdate, NutritionProfileResponse
 from app.services.nutrition_profile import create_nutrition_profile, get_all_nutrition_profiles, update_nutrition_profile, delete_nutrition_profile
+from app.core.security import get_current_user
+from app.model.user import Users
 
 router = APIRouter(prefix="/nutrition_profiles", tags=["nutrition_profiles"])
 
 @router.post("/", response_model=NutritionProfileResponse)
-def create(data: NutritionProfileCreate, db: Session = Depends(get_db)):
+def create(data: NutritionProfileCreate, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
     return create_nutrition_profile(db, data)
 
 @router.get("/", response_model=List[NutritionProfileResponse])
-def get_all(db: Session = Depends(get_db)):
+def get_all(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
     return get_all_nutrition_profiles(db)
 
 @router.put("/{user_id}", response_model=NutritionProfileResponse)
-def update(user_id: str, data: NutritionProfileUpdate, db: Session = Depends(get_db)):
+def update(user_id: str, data: NutritionProfileUpdate, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
     updated_profile = update_nutrition_profile(db, user_id, data)
     if not updated_profile:
         return {"error": "Nutrition profile not found"}
     return updated_profile
 
 @router.delete("/{profile_id}")
-def delete(profile_id: str, db: Session = Depends(get_db)):
+def delete(profile_id: str, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
     try:
         delete_nutrition_profile(db, profile_id)
     except Exception as e:

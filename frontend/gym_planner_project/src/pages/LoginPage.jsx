@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Bolt, Github, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -99,9 +100,14 @@ export const LoginPage = ({ onLogin }) => {
                     </div>
 
                     <div className="mt-16 text-center">
-                        <p className="text-slate-500 dark:text-slate-400 text-sm font-bold">
-                            New to FitSync?
-                            <a className="text-primary font-black ml-2 hover:underline underline-offset-8" href="#">Create Account</a>
+                        <p className="text-sm text-slate-400">
+                            Don't have an account?
+                            <Link
+                                to="/register"
+                                className="text-primary font-bold ml-2 hover:underline"
+                            >
+                                Create Account
+                            </Link>
                         </p>
                     </div>
                 </div>

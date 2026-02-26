@@ -5,6 +5,7 @@ from app.schemas.exercise import ExerciseCreate, ExerciseUpdate
 def create_exercise(db: Session, exercise: ExerciseCreate) -> Exercises:
     db_exercise = Exercises(                                         # convert pydantic model to SQLAlchemy model 
         name=exercise.name,
+        img_url=exercise.img_url,
         primary_muscle=exercise.primary_muscle,
         secondary_muscle=exercise.secondary_muscles or []
     )
@@ -19,6 +20,8 @@ def update_exercise(db: Session, exercise_id: str, exercise_data: ExerciseUpdate
         return None
     if exercise_data.name is not None:
         db_exercise.name = exercise_data.name
+    if exercise_data.img_url is not None:
+        db_exercise.img_url = exercise_data.img_url
     if exercise_data.primary_muscle is not None:
         db_exercise.primary_muscle = exercise_data.primary_muscle
     if exercise_data.secondary_muscles is not None:
