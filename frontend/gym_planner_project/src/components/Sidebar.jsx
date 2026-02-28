@@ -11,8 +11,11 @@ import {
     Calculator
 } from 'lucide-react';
 import { CURRENT_USER } from '../constants';
+import { useAuth } from '../context/AuthContext';
 
-export const Sidebar = ({ onNewWorkout }) => {
+export const Sidebar = ({ onNewWorkout, logout }) => {
+    const { user } = useAuth();
+
     const navItems = [
         { path: '/', label: 'Home', icon: Home },
         { path: '/schedule', label: 'Schedule', icon: Calendar },
@@ -20,6 +23,10 @@ export const Sidebar = ({ onNewWorkout }) => {
         { path: '/calculator', label: 'Calculator', icon: Calculator },
         { path: '/profile', label: 'Profile', icon: User },
     ];
+
+    const handlelogout = () => {
+        logout();
+    }
 
     return (
         <aside className="hidden lg:flex flex-col w-72 h-screen sticky top-0 bg-background-dark border-r border-primary/10 p-6">
@@ -77,7 +84,7 @@ export const Sidebar = ({ onNewWorkout }) => {
 
                     <div className="min-w-0 flex-1">
                         <p className="text-sm font-bold text-white truncate">
-                            {CURRENT_USER.name}
+                            {user?.username}
                         </p>
                         <p className="text-[10px] text-primary/60 font-bold uppercase tracking-wider">
                             {CURRENT_USER.role}
@@ -85,7 +92,7 @@ export const Sidebar = ({ onNewWorkout }) => {
                     </div>
 
                     <button className="text-slate-500 hover:text-red-400 transition-colors">
-                        <LogOut size={16} />
+                        <LogOut onClick={() => handlelogout()} size={16} />
                     </button>
                 </div>
             </div>

@@ -1,9 +1,29 @@
-import React from 'react';
+import { useState, useEffect, React } from 'react';
 import { Link } from 'react-router-dom';
 import { Bolt, Github, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { authAPI } from '../api/authAPI';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-export const LoginPage = ({ onLogin }) => {
+export const LoginPage = () => {
+    const { login } = useAuth();
+    const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            await login({ "email": email, "password_hash": password });
+            navigate("/");
+        } catch (error) {
+            alert("Login failed: " + error.response?.data?.detail || error.message);
+        }
+    }
+
+
     return (
         <div className="min-h-screen w-full flex items-center justify-center p-4 md:p-8 bg-background-dark">
             <motion.div
@@ -55,13 +75,15 @@ export const LoginPage = ({ onLogin }) => {
                         <p className="text-slate-500 dark:text-slate-400 font-medium">Welcome back! Please enter your details.</p>
                     </div>
 
-                    <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); onLogin(); }}>
+                    <form className="space-y-8" onSubmit={handleSubmit}>
                         <div className="space-y-3">
                             <label className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 ml-1">Email Address</label>
                             <input
                                 className="w-full rounded-full border-2 border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 px-8 py-5 focus:border-primary focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400 transition-all font-bold"
                                 placeholder="name@example.com"
                                 type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div className="space-y-3">
@@ -74,6 +96,8 @@ export const LoginPage = ({ onLogin }) => {
                                     className="w-full rounded-full border-2 border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 px-8 py-5 pr-16 focus:border-primary focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400 transition-all font-bold"
                                     placeholder="••••••••"
                                     type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                                 <button className="absolute right-6 text-slate-400 hover:text-primary transition-colors" type="button">
                                     <span className="material-symbols-outlined">visibility</span>

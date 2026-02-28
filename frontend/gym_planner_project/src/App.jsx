@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -8,13 +8,17 @@ import { SchedulePage } from './pages/SchedulePage.jsx'
 import { CalculatorPage } from './pages/CalculatorPage.jsx'
 import { LoginPage } from './pages/LoginPage.jsx'
 import { RegisterPage } from './pages/RegisterPage.jsx'
+import { ProfilePage } from './pages/ProfilePage.jsx'
+import { ChangePassword } from './pages/ChangePassword.jsx'
 
 import { CreatePlanModal } from './components/CreatePlanModal.jsx'
 import { SwitchPlanModal } from './components/SwitchPlanModal.jsx'
 import { AddExerciseModal } from './components/AddExerciseModal.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
+import { useAuth } from './context/AuthContext.jsx'
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { isAuthenticated, loading, logout } = useAuth()
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isSwitchModalOpen, setIsSwitchModalOpen] = useState(false)
@@ -22,13 +26,17 @@ export default function App() {
 
   const location = useLocation()
 
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
   // Simple auth check (temporary)
-  if (!isLoggedIn) {
+  if (!isAuthenticated) {
     return (
       <Routes>
-        <Route path="/" element={<LoginPage onLogin={() => setIsLoggedIn(true)} />} />
+        <Route path="/" element={<LoginPage onLogin={() => { }} />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="*" element={<LoginPage onLogin={() => setIsLoggedIn(true)} />} />
+        <Route path="*" element={<LoginPage onLogin={() => { }} />} />
       </Routes>
     )
   }
@@ -36,7 +44,10 @@ export default function App() {
   return (
     <div className="flex min-h-screen dark:bg-background-dark">
 
-      <Sidebar onNewWorkout={() => setIsCreateModalOpen(true)} />
+      <Sidebar
+        onNewWorkout={() => setIsCreateModalOpen(true)}
+        logout={() => logout()}
+      />
 
       <main className="flex-1 flex flex-col overflow-y-auto hide-scrollbar">
 
@@ -68,20 +79,41 @@ export default function App() {
             className="flex-1"
           >
             <Routes location={location}>
-              <Route path="/" element={<DashboardPage />} />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                } />
               < Route
                 path="/schedule"
                 element={
-                  <SchedulePage
-                    onSwitchPlan={() => setIsSwitchModalOpen(true)}
-                    onAddExercise={() => setIsAddExerciseModalOpen(true)}
-                  />
+                  <ProtectedRoute>
+                    <SchedulePage
+                      onSwitchPlan={() => setIsSwitchModalOpen(true)}
+                      onAddExercise={() => setIsAddExerciseModalOpen(true)}
+                    />
+                  </ProtectedRoute>
                 }
               />
 
-              <Route path="/calculator" element={<CalculatorPage />} />
-              <Route path="/stats" element={<DashboardPage />} />
-              <Route path="/profile" element={<DashboardPage />} />
+              <Route
+                path="/calculator"
+                element={
+                  <ProtectedRoute>
+                    <CalculatorPage />
+                  </ProtectedRoute>
+                } />
+              {/* <Route path="/stats" element={<DashboardPage />} /> */}
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>} />
+              <Route path="/change-password" element={
+                <ProtectedRoute>
+                  <ChangePassword />
+                </ProtectedRoute>} />
             </Routes>
           </motion.div>
         </AnimatePresence>

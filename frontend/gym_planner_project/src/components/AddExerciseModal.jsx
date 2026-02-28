@@ -1,7 +1,7 @@
 import { useEffect, React, useState } from 'react';
 import { X, Search, Plus, Sparkles, Dumbbell } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExerciseAPI } from '../api/ExerciseAPI.js';
+
 
 export const AddExerciseModal = ({ isOpen, onClose }) => {
     const categories = ['All', 'Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Cardio'];

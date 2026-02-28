@@ -1,9 +1,11 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Dumbbell } from "lucide-react"
+import { useAuth } from "../context/AuthContext"
 
 export const RegisterPage = () => {
     const navigate = useNavigate()
+    const { register } = useAuth()
 
     const [formData, setFormData] = useState({
         name: "",
@@ -21,7 +23,7 @@ export const RegisterPage = () => {
         })
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
         if (formData.password !== formData.confirmPassword) {
@@ -34,12 +36,28 @@ export const RegisterPage = () => {
             return
         }
 
+        if (formData.name.trim() === "" || formData.email.trim() === "" || formData.password.trim() === "") {
+            setError("Name, email, and password cannot be empty")
+            return
+        }
+
+        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(formData.email)) {
+            setError("Invalid email format")
+            return
+        }
+
         setError("")
 
-        // 👉 Sau này gọi API register ở đây
-
-        // Giả lập đăng ký xong quay về login
-        navigate("/")
+        await register({
+            username: formData.name,
+            email: formData.email,
+            password_hash: formData.password
+        }).then(() => {
+            alert("Registration successful! Please log in.")
+            navigate("/login")
+        }).catch((err) => {
+            setError(err.response?.data?.detail || "Registration failed")
+        })
     }
 
     return (
